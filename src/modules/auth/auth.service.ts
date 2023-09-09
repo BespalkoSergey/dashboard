@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { AdminRepository } from '../admin/admin.repository'
-import { Admin } from '../admin/admin.model'
 import { JwtService } from '@nestjs/jwt'
+import { Admin } from '@prisma/client'
+import { comparePassword } from '../../utils/bcrypt.util'
 
 @Injectable()
 export class AuthService {
@@ -9,12 +10,12 @@ export class AuthService {
     private readonly adminRepository: AdminRepository,
     private readonly jwtService: JwtService
   ) {}
-  public async validateAdmin(login: string, pass: string): Promise<Omit<Admin, 'password'> | null> {
+  public async validateAdmin(login: string, pass: string): Promise<Omit<Admin, 'hash'> | null> {
     const admin = await this.adminRepository.findByLogin(login)
 
-    if (admin && admin.password === pass) {
+    if (admin && (await comparePassword(admin.hash, pass))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...res } = admin
+      const { hash, ...res } = admin
       return res
     }
 
@@ -27,11 +28,11 @@ export class AuthService {
     }
   }
 
-  private getAdminId(context: unknown): number {
-    return this.isOmitAdminModel(context) ? context.id : 0
+  private getAdminId(context: unknown): string {
+    return this.isOmitAdminModel(context) ? context.id : 'error'
   }
 
   private isOmitAdminModel(context: unknown): context is Admin {
-    return typeof context === 'object' && context !== null && Object.keys(context).every(k => ['id', 'login'].includes(k))
+    return typeof context === 'object' && context !== null && 'id' in context
   }
 }

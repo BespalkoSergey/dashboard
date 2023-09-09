@@ -4,6 +4,7 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
+import { DatabaseModule } from './modules/database/database.module'
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { ConfigModule } from '@nestjs/config'
       rootPath: join(__dirname, '..', 'client', 'dashboard')
     }),
     AuthModule,
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(),
+    DatabaseModule
   ],
   controllers: [],
   providers: [AppService]

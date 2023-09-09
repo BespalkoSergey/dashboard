@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport'
 import { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
 import { AdminRepository } from '../admin/admin.repository'
-import { Admin } from '../admin/admin.model'
+import { Admin } from '@prisma/client'
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +27,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
   public async refresh(@Request() req: ExpressRequest) {
-    const admin = this.adminRepository.findById((req.user as Admin).id)
+    const admin = this.adminRepository.findById((req.user as Admin)?.id ?? '')
     return this.auth.login(admin)
   }
 }
