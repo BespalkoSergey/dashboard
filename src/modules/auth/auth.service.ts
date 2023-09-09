@@ -13,7 +13,7 @@ export class AuthService {
   public async validateAdmin(login: string, pass: string): Promise<Omit<Admin, 'hash'> | null> {
     const admin = await this.adminRepository.findByLogin(login)
 
-    if (admin && (await comparePassword(admin.hash, pass))) {
+    if (admin && (await comparePassword(pass, admin.hash))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { hash, ...res } = admin
       return res
@@ -24,15 +24,11 @@ export class AuthService {
 
   public async login(context: Express.User | undefined) {
     return {
-      accessToken: this.jwtService.sign({ id: this.getAdminId(context) })
+      accessToken: this.jwtService.sign({ id: this.getId(context) })
     }
   }
 
-  private getAdminId(context: unknown): string {
-    return this.isOmitAdminModel(context) ? context.id : 'error'
-  }
-
-  private isOmitAdminModel(context: unknown): context is Admin {
-    return typeof context === 'object' && context !== null && 'id' in context
+  private getId(context: unknown): string {
+    return typeof context === 'object' && context !== null && 'id' in context && typeof context.id === 'string' ? context.id : 'error'
   }
 }
