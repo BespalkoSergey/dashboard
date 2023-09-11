@@ -9,7 +9,7 @@ import { DatabaseModule } from './modules/database/database.module'
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client', 'dashboard')
+      rootPath: join(__dirname, '..', 'client')
     }),
     AuthModule,
     ConfigModule.forRoot(),
