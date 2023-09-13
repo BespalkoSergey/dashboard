@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AdminRepository } from '../admin/admin.repository'
 import { JwtService } from '@nestjs/jwt'
 import { comparePassword } from '../../utils/bcrypt.util'
+import { isNotEmptyString } from '../../utils/in-not-empty-string.util'
 
 @Injectable()
 export class AuthService {
@@ -19,11 +20,13 @@ export class AuthService {
     return null
   }
 
-  public async login(context: Express.User | undefined): Promise<{ token: string } | null> {
-    return { token: this.jwtService.sign({ id: this.getId(context) }) }
+  public async login(context: Express.User | undefined): Promise<string | null> {
+    const id = this.getId(context)
+    return id ? this.jwtService.signAsync({ id }) : null
   }
 
-  private getId(context: unknown): string {
-    return typeof context === 'object' && context !== null && 'id' in context && typeof context.id === 'string' ? context.id : 'error'
+  private getId(context: unknown): string | null {
+    const id = typeof context === 'object' && context !== null && 'id' in context ? context.id : null
+    return isNotEmptyString(id) ? id : null
   }
 }
