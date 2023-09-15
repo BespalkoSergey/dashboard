@@ -27,7 +27,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
   public async refresh(@Request() req: ExpressRequest) {
-    const admin = this.adminRepository.findById((req.user as Admin)?.id ?? '')
-    return this.auth.login(admin)
+    const admin = await this.adminRepository.findById((req.user as Admin)?.id ?? '')
+    return admin ? this.auth.login(admin) : null
   }
 }
