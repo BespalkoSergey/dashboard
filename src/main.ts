@@ -3,8 +3,7 @@ import { AppModule } from './app.module'
 import { NestExpressApplication } from '@nestjs/platform-express'
 
 async function bootstrap() {
-  // TODO: don`t forget delete cors
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true })
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
   app.disable('x-powered-by')
   app.enableShutdownHooks()
   await app.listen(3000)
