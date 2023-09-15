@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AppService } from './app.service'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { AuthModule } from './modules/auth/auth.module'
@@ -15,7 +14,6 @@ import { DatabaseModule } from './modules/database/database.module'
     ConfigModule.forRoot(),
     DatabaseModule
   ],
-  controllers: [],
-  providers: [AppService]
+  controllers: []
 })
 export class AppModule {}
