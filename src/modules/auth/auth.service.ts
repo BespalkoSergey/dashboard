@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AdminRepository } from '../repositories/admin/admin.repository'
 import { JwtService } from '@nestjs/jwt'
 import { comparePassword } from '../../utils/bcrypt.util'
-import { isNotEmptyString } from '../../utils/in-not-empty-string.util'
+import { UserTokenData } from '../../models/models'
 
 @Injectable()
 export class AuthService {
@@ -10,7 +10,7 @@ export class AuthService {
     private readonly adminRepository: AdminRepository,
     private readonly jwtService: JwtService
   ) {}
-  public async validateAdmin(login: string, pass: string): Promise<{ id: string } | null> {
+  public async validate(login: string, pass: string): Promise<UserTokenData | null> {
     const admin = await this.adminRepository.findByLogin(login)
 
     if (admin && (await comparePassword(pass, admin.hash))) {
@@ -21,12 +21,20 @@ export class AuthService {
   }
 
   public async login(context: Express.User | undefined): Promise<string | null> {
-    const id = this.getId(context)
-    return id ? this.jwtService.signAsync({ id }) : null
+    return this.jwtService.signAsync({ id: this.getUser(context).id })
   }
 
-  private getId(context: unknown): string | null {
-    const id = typeof context === 'object' && context !== null && 'id' in context ? context.id : null
-    return isNotEmptyString(id) ? id : null
+  public async refresh(context: Express.User | undefined) {
+    const admin = await this.adminRepository.findById(this.getUser(context).id)
+    return admin ? this.login(admin) : null
+  }
+
+  public async profile(context: Express.User | undefined): Promise<UserTokenData> {
+    return this.getUser(context)
+  }
+
+  // TODO: fix type assertion
+  private getUser(context: Express.User | undefined): UserTokenData {
+    return context as UserTokenData
   }
 }

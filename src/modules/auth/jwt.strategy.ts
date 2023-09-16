@@ -3,6 +3,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Injectable } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { ConfigService } from '@nestjs/config'
+import { DecodedToken, UserTokenData } from '../../models/models'
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -16,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  public async validate(payload: unknown) {
-    return { id: (payload as { id: number }).id }
+  public validate({ id }: DecodedToken): UserTokenData {
+    return { id }
   }
 }
