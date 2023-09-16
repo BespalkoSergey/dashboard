@@ -5,7 +5,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { DatabaseModule } from './modules/database/database.module'
 import { ApiModule } from './modules/api/api.module'
-import * as cors from 'cors'
+import cors from 'cors'
 
 @Module({
   imports: [
