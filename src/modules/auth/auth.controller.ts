@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, Request } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
-import { AdminRepository } from '../admin/admin.repository'
+import { AdminRepository } from '../repositories/admin/admin.repository'
 import { Admin } from '@prisma/client'
 
 @Controller('auth')

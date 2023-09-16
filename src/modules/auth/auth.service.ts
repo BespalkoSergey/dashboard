@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { AdminRepository } from '../admin/admin.repository'
+import { AdminRepository } from '../repositories/admin/admin.repository'
 import { JwtService } from '@nestjs/jwt'
 import { comparePassword } from '../../utils/bcrypt.util'
 import { isNotEmptyString } from '../../utils/in-not-empty-string.util'
