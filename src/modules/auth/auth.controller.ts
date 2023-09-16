@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request } from '@nestjs/common'
+import { Controller, Post, UseGuards, Request, Get } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
@@ -15,7 +15,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('profile')
+  @Get('profile')
   public async getProfile(@Request() req: ExpressRequest): Promise<UserTokenData> {
     return this.auth.profile(req.user)
   }
