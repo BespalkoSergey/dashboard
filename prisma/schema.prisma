@@ -20,5 +20,5 @@ model Admin {
 model MonoEvent {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
-  text      String
+  event     Json
 }

@@ -4,9 +4,18 @@ import { DatabaseService } from '../database/database.service'
 @Injectable()
 export class MonoEventsService {
   constructor(private readonly database: DatabaseService) {}
-  public async setEvent(event: unknown) {
+  public async setSystemEvent(event: object) {
     try {
-      await this.database.monoEvent.create({ data: { text: JSON.stringify(event) } })
+      await this.database.monoEvent.create({ data: { event } })
     } catch {}
+  }
+
+  public async getEvents() {
+    try {
+      const rows = await this.database.monoEvent.findMany()
+      return rows.map(v => v.event)
+    } catch {
+      return []
+    }
   }
 }
